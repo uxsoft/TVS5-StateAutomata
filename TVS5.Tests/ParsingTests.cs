@@ -6,9 +6,10 @@ namespace TVS5.Tests
     public class ParsingTests
     {
         [Fact]
-        public void TestMethod1()
+        public void ParseArtificialInput()
         {
-            AbominationCsvReader.Parse("Input/g1A23A.csv");
+            var automaton = AbominationCsvReader.Parse("Input/g1A23A.csv");
+
         }
     }
 }

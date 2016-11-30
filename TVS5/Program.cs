@@ -10,6 +10,8 @@ namespace TVS5
     {
         static void Main(string[] args)
         {
+            var automaton = AbominationCsvReader.Parse("Input/g1A23A.csv");
+            
         }
     }
 }

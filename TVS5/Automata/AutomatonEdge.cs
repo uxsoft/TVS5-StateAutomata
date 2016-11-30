@@ -12,5 +12,7 @@ namespace TVS5.Automata
         {
 
         }
+        public string Input { get; set; }
+        public string Output { get; set; }
     }
 }

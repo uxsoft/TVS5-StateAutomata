@@ -8,5 +8,6 @@ namespace TVS5.Automata
 {
     public class AutomatonState
     {
+        public string Name { get; set; }
     }
 }
