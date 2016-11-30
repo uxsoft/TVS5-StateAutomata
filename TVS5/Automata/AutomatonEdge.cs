@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace TVS5.Automata
 {
-    class AutomatonEdge
+    public class AutomatonEdge : QuickGraph.Edge<AutomatonState>
     {
+        public AutomatonEdge(AutomatonState source, AutomatonState target) : base(source, target)
+        {
+
+        }
     }
 }

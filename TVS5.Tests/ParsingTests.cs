@@ -8,6 +8,7 @@ namespace TVS5.Tests
         [Fact]
         public void TestMethod1()
         {
+            AbominationCsvReader.Parse("Input/g1A23A.csv");
         }
     }
 }

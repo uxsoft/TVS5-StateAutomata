@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TVS5.Automata
 {
-    class AutomatonGraph
+    public class AutomatonGraph: QuickGraph.UndirectedGraph<AutomatonState, AutomatonEdge>
     {
     }
 }
