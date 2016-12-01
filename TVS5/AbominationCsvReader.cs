@@ -24,11 +24,11 @@ namespace TVS5
 
                     if (i == 1)
                     {
-                        automaton.EntryState = line[1].Trim();
+                        automaton.EntryState = automaton.GetOrCreateState(line[1].Trim());
                     }
                     else if (i == 2)
                     {
-                        automaton.ExitState = line[1].Trim();
+                        automaton.ExitState = automaton.GetOrCreateState(line[1].Trim());
                     }
                     else if (i == 3)
                     {
@@ -42,13 +42,13 @@ namespace TVS5
                     }
                     else if (i > 6)
                     {
-                        string from = line[0];
+                        string from = line[0].Trim();
                         for (int col = 0; col < 3; col++)
                         {
                             string to = line[col + 1].Trim();
                             string input = inputs[col].Trim();
                             string output = line[col + 5].Trim();
-                            automaton.AddTransition(from, to, input, output);
+                            automaton.AddTransition(automaton.GetOrCreateState(from), automaton.GetOrCreateState(to), input, output);
                         }
                     }
                 }
