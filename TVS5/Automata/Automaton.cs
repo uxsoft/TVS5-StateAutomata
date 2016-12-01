@@ -39,6 +39,14 @@ namespace TVS5.Automata
             return edge;
         }
 
+        public Tuple<AutomatonState, string> Next(AutomatonState current, string input)
+        {
+            var edge = Graph.OutEdges(current).SingleOrDefault(e => e.Input == input);
+            if (edge != null)
+                return new Tuple<AutomatonState, string>(edge.Target, edge.Output);
+            else return new Tuple<AutomatonState, string>(current, DefaultOutput);
+        }
+
         public IEnumerable<IEnumerable<AutomatonEdge>> StateCoverage()
         {
             var tryGetPath = Graph.ShortestPathsDijkstra(e => 1, EntryState);
@@ -68,10 +76,9 @@ namespace TVS5.Automata
 
             var groups = States.Values.GroupBy(s =>
             {
-                var outEdges = Graph.Edges.Where(e => e.Source == s).OrderBy(e => e.Input).Select(e => $"{e.Input}/{e.Output}");
-                var inEdges = Graph.Edges.Where(e => e.Target == s).OrderBy(e => e.Input).Select(e => $"{e.Input}/{e.Output}");
+                var outEdges = Graph.OutEdges(s).OrderBy(e => e.Input).Select(e => $"{e.Input} -> {e.Target.Name}");
 
-                return $"[{string.Join(", ", inEdges)}] -> [{string.Join(", ", inEdges)}]";
+                return outEdges.ToDelimitedString(", ");
             });
 
             foreach (var group in groups)
@@ -94,13 +101,43 @@ namespace TVS5.Automata
         public IEnumerable<IEnumerable<string>> CharacteristicSet()
         {
             return Graph.Vertices.SelectMany(v => Graph.Vertices.Select(v2 => new { v1 = v, v2 = v2 }))
+                .Where(t => t.v1 != t.v2)
                 .Select(t => CharacteristicSet(t.v1, t.v2))
-                .Distinct();
+                .DistinctBy(p => p.ToDelimitedString(", "));
         }
 
         public IEnumerable<string> CharacteristicSet(AutomatonState v1, AutomatonState v2)
         {
+            var queue = new Queue<CharacteristicSetQueueItem>();
+            queue.Enqueue(new CharacteristicSetQueueItem() { V1 = v1, V2 = v2 });
+
+            while (queue.Count > 0)
+            {
+                var item = queue.Dequeue();
+
+                foreach (var input in Graph.OutEdges(item.V1).Concat(Graph.OutEdges(item.V2)).Select(e => e.Input))
+                {
+                    var v1Next = Next(item.V1, input);
+                    var v2Next = Next(item.V2, input);
+                    if (v1Next.Item2 != v2Next.Item2)
+                    {
+                        return item.Path.Concat(input);
+                    }
+                    else
+                    {
+                        queue.Enqueue(new CharacteristicSetQueueItem() { V1 = v1Next.Item1, V2 = v2Next.Item1, Path = item.Path.Concat(input) });
+                    }
+                }
+            }
+
             return null;
+        }
+
+        private class CharacteristicSetQueueItem
+        {
+            public AutomatonState V1 { get; set; }
+            public AutomatonState V2 { get; set; }
+            public IEnumerable<string> Path { get; set; } = Enumerable.Empty<string>();
         }
     }
 }

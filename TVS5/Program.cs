@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using MoreLinq;
 using System.Text;
 using System.Threading.Tasks;
 using TVS5.Automata;
@@ -53,7 +54,13 @@ namespace TVS5
 
                 //Minimalization
                 WriteLine("\n## Minimalization\n");
-                if (automaton.Minimalize())
+                bool minimalized = false;
+                while (automaton.Minimalize())
+                {
+                    minimalized = true;
+                }
+
+                if (minimalized)
                 {
                     WriteLine("The automaton wasn't in its minimal form and had to be minimized.\n");
 
@@ -68,7 +75,10 @@ namespace TVS5
 
                 //Characteristic Set
                 WriteLine("\n## Characteristic Set\n");
-
+                foreach (var path in automaton.CharacteristicSet())
+                {
+                    WriteLine($"{{{path.ToDelimitedString(", ")}}}");
+                }
             }
         }
     }
