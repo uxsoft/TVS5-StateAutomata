@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using QuickGraph.Algorithms;
+using MoreLinq;
 
 namespace TVS5.Automata
 {
@@ -61,7 +62,7 @@ namespace TVS5.Automata
                     yield return path.Concat(Enumerable.Repeat(newEdge, 1));
         }
 
-        public Boolean Minimalize()
+        public bool Minimalize()
         {
             var changed = false;
 
@@ -91,6 +92,13 @@ namespace TVS5.Automata
         }
 
         public IEnumerable<IEnumerable<string>> CharacteristicSet()
+        {
+            return Graph.Vertices.SelectMany(v => Graph.Vertices.Select(v2 => new { v1 = v, v2 = v2 }))
+                .Select(t => CharacteristicSet(t.v1, t.v2))
+                .Distinct();
+        }
+
+        public IEnumerable<string> CharacteristicSet(AutomatonState v1, AutomatonState v2)
         {
             return null;
         }
