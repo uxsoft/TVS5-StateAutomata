@@ -42,12 +42,14 @@ namespace TVS5
 
                 //State Coverage
                 WriteLine("\n## State Coverage\n");
+                WriteLine("Set L was generated using function StateCoverage()\n");
                 foreach (var path in automaton.StateCoverage())
                     WriteLine($"[{string.Join(", ", path.Select(e => e.Input))}]");
 
 
                 //Transition Coverage
                 WriteLine("\n## Transition Coverage\n");
+                WriteLine("Set T was generated using function TransitionCoverage(). T = L • (Input^1 ∪ {<>}).\n");
                 foreach (var path in automaton.TransitionCoverage())
                     WriteLine($"[{string.Join(", ", path.Select(e => e.Input))}]");
 
@@ -75,10 +77,23 @@ namespace TVS5
 
                 //Characteristic Set
                 WriteLine("\n## Characteristic Set\n");
+                WriteLine("Set W was generated using function CharacteristicSet() on a minimized automaton.\n");
                 foreach (var path in automaton.CharacteristicSet())
                 {
                     WriteLine($"{{{path.ToDelimitedString(", ")}}}");
                 }
+
+                //Hidden States
+                WriteLine("\n## Hidden States\n");
+                WriteLine("Set Z was generated using function HiddenStatesCoverage(). For depth k=1: Z = Input • W ∪ W.\n");
+                foreach (var path in automaton.HiddenStatesCoverage())
+                    WriteLine($"[{path.ToDelimitedString(", ")}]");
+
+                //Final Test Suite
+                WriteLine("\n## Final Test Suite\n");
+                WriteLine("Set F was generated using function ComprehensiveCoverage(). F = T • Z.\n");
+                foreach (var path in automaton.ComprehensiveCoverage())
+                    WriteLine($"[{path.ToDelimitedString(", ")}]");
             }
         }
     }

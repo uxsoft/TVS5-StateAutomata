@@ -98,6 +98,29 @@ namespace TVS5.Automata
             return changed;
         }
 
+        public IEnumerable<IEnumerable<string>> ComprehensiveCoverage()
+        {
+            var Z = HiddenStatesCoverage();
+            var T = TransitionCoverage();
+            foreach (var t in T)
+                foreach (var z in Z)
+                {
+                    yield return t.Select(e => e.Input).Concat(z);
+                }
+        }
+
+        public IEnumerable<IEnumerable<string>> HiddenStatesCoverage()
+        {
+            var inputs = Graph.Edges.Select(e => e.Input).Distinct().Select(i => Enumerable.Repeat(i, 1));
+            var W = CharacteristicSet();
+
+            foreach (var input in inputs)
+                foreach (var w in W)
+                {
+                    yield return input.Concat(w);
+                }
+        }
+
         public IEnumerable<IEnumerable<string>> CharacteristicSet()
         {
             return Graph.Vertices.SelectMany(v => Graph.Vertices.Select(v2 => new { v1 = v, v2 = v2 }))

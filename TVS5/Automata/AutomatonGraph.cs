@@ -28,7 +28,7 @@ namespace TVS5.Automata
                 string dotFile = Path.ChangeExtension(file, "dot");
                 string imgFile = Path.ChangeExtension(file, "jpg");
                 File.WriteAllText(dotFile, dotContents);
-                Process.Start(@"dot.exe", $"-Tjpg \"{dotFile}\" -o \"{imgFile}\"")?.WaitForExit();
+                Process.Start(new ProcessStartInfo(@"dot.exe", $"-Tjpg \"{dotFile}\" -o \"{imgFile}\"") { CreateNoWindow = true, WindowStyle = ProcessWindowStyle.Hidden })?.WaitForExit();
             }
             catch (Exception ex)
             {
